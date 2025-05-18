@@ -1,0 +1,277 @@
+/*=============== VARIABLES CSS ===============*/
+:root {
+    --header-height: 3.5rem;
+
+    /*========== Colors ==========*/
+    /*Color mode HSL(hue, saturation, lightness)*/
+    --first-color: hsl(230, 62%, 56%);
+    --title-color: hsl(230, 70%, 16%);
+    --text-color: hsl(230, 16%, 45%);
+    --border-color: hsl(230, 50%, 90%);
+    --white-color: hsl(0, 0%, 100%);
+    --body-color: hsl(230, 100%, 96%);
+    --container-color: hsl(230, 100%, 97%);
+
+    /*========== Font and typography ==========*/
+    /*.5rem = 8px | 1rem = 16px ...*/
+    --body-font: "Montserrat", sans-serif;
+    --second-font: "Montagu Slab", serif;
+    --biggest-font-size: 2rem;
+    --h1-font-size: 1.5rem;
+    --h2-font-size: 1.25rem;
+    --h3-font-size: 1rem;
+    --normal-font-size: .938rem;
+    --small-font-size: .813rem;
+    --smaller-font-size: .75rem;
+
+    /*========== Font weight ==========*/
+    --font-regular: 400;
+    --font-medium: 500;
+    --font-semi-bold: 600;
+
+    /*========== z index ==========*/
+    --z-tooltip: 10;
+    --z-fixed: 100;
+}
+
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f9f9f9;
+}
+
+#container {
+    display: flex;
+    width: 70%;
+    /* height: 600px;  <-- remove this */
+    max-width: 900px;
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    position: relative;
+    margin: 20px auto;
+    /* Center horizontally, if needed */
+}
+
+#imageContainer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f5f9;
+    /* Softer, modern gray-blue background */
+        border-radius: 2rem;
+    padding: 20px;
+    
+}
+
+
+
+#imageContainer img {
+    width: 80%;
+    height: auto;
+    border-radius: 2rem;
+}
+
+#formContainer {
+    flex: 1;
+    padding: 40px;
+    text-align: center;
+    background: white;
+    border-radius: 2rem;
+}
+
+#imageTopCenter {
+    flex: 1;
+    display: flex;
+    width: 50%;          /* Let it scale naturally */
+    height: 50%;         /* Maintain aspect ratio */
+    margin: 0 auto 10px;       /* Center horizontally */
+    background-color: #dbe1ff;
+    object-fit: contain;  /* Prevent distortion */
+    position: relative;   /* Helps with positioning */
+    top: 0;               /* Stick to the top */
+}
+
+input {
+    width: 90%;
+    padding: 12px 16px;
+    margin: 10px 0;
+    border: 1px solid #cbd5e1; /* Softer gray-blue border */
+    border-radius: 2rem;
+    background-color: #f8fafc; /* Soft white-blue background */
+    font-size: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+input:hover {
+    border-color: #2563eb; /* Tailwind blue-600 */
+    background-color: #eef4ff; /* Very light bluish hover */
+}
+
+input:focus {
+    background-color: #ffffff;
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); /* Subtle focus ring */
+}
+
+button {
+    width: 100%;
+    margin: 10px 0;
+    background: linear-gradient(135deg, var(--first-color), hsl(230, 62%, 66%));/* Add a gradient background */
+    color: var(--white-color);  
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    border-color: var(--border-color);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0px 4px 12px rgba(30, 64, 175, 0.3); /* Subtle blue shadow */
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background: white;
+    color: #1e3a8a; /* Match gradient color on hover */
+    border: 2px solid #1e3a8a;
+    box-shadow: 0px 6px 16px rgba(30, 64, 175, 0.5);
+    transform: translateY(-2px); /* Slight lift */
+}
+
+button img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1); /* Makes logos white */
+}
+
+button:hover img {
+    filter: none; /* Show original dark icon */
+}
+
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    position: relative;
+    padding: 12px 24px;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #ccc;
+    margin: 0 10px;
+}
+
+.forget-password:hover {
+    color: #942b2b;
+}
+
+.input-with-icon {
+    width: 90%;
+    padding-left: 30px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: 8px center;
+    background-size: 12px;
+
+}
+
+.code-container {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.code-input {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    border: 2px solid #ccc;
+    border-radius: 2rem;
+    outline: none;
+}
+
+/* Status Bar Container Styling */
+.status-bar-container {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    border: 1px solid #727b9b;
+    background-color: #f4f4f9; /* Light background color */
+    padding: 4px; /* Padding for spacing */
+    margin: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition when showing/hiding */
+}
+
+/* Status Bar Styling */
+.status-bar {
+    width: 2%; /* Increase width for better visibility */
+    height: 8px; /* Slightly taller for better prominence */
+    background-color: #ff0000; /* Red color for 'Offline' */
+    border-radius: 2rem;
+    transition: width 0.5s ease-in-out; /* Smooth transition for width change */
+}
+
+.status-text {
+    display: none; /* Initially hidden */
+    font-size: 14px; /* Font size for the status text */
+    font-family: 'Roboto', sans-serif;
+    color: #333; /* Darker text color for contrast */
+    margin: 10px 0px 20px 0px; /* Space between the bar and text */
+}
+
+.error-message-email{
+    color : red;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 20px;
+    }
+    #container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    #imageContainer {
+        flex: unset;
+        height: 100%;
+    }
+    #imageTopCenter {
+        flex: unset;
+        width: 100%;          /* Let it scale naturally */
+        height: 100%;            /* Stick to the top */
+    }
+}

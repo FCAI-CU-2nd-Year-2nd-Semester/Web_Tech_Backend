@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+    <link rel="stylesheet" href="{% static 'css/Login_Register.css' %}">
+</head>
+
+<body>
+    <div id="container">
+        <div id="imageContainer">
+            <img src="{% static 'image/Login_Resiter_Illustratoin_2.svg' %}" alt="">
+        </div>
+        <div id="formContainer">
+            <h1>Sign up</h1>
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" id="registerButton">Register</button>
+            </form>
+            <div class="or-divider">OR</div>
+            <button><img src="{% static 'image/facebook3.svg' %}" alt="Facebook">Register with Facebook</button>
+            <button><img src="{% static 'image/google.svg' %}" alt="Google">Register with Google</button>
+            <button><img src="{% static 'image/linkedin.svg' %}" alt="LinkedIn">Register with LinkedIn</button>
+            <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </div>
+    </div>
+    <script src="{% static 'js/Create_Password.js' %}"></script>
+    <script src="{% static 'js/Sign_Up.js' %}"></script>
+</body>
+</html>

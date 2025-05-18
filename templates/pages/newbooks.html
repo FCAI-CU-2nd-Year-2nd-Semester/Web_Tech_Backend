@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FavIcon -->
+    <link rel="shortcut icon" href="{% static 'image/favicon.png' %}" type="image/x-icon">
+    <!-- REMIXIONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- swiper css -->
+    <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}" />
+    <title>New Books</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="{% url 'index' %}" class="nav__logo">
+                <i class="ri-book-marked-fill"></i>E-Book
+            </a>
+            <div class="nav__menu">
+                <button id="back-button" class="button"><i class="ri-arrow-left-line"></i> Back</button>
+            </div>
+        </nav>
+    </header>
+
+    <!--======================= MAIN =================-->
+    <main class="main">
+        <!--======================= Featured =================-->
+        <section class="featured section" id="featured">
+            <h2 class="section__title">
+                Featured Books
+            </h2>
+            <div class="featured__container container">
+                <div class="featured__swiper swiper">
+                    <div class="swiper-wrapper">
+                        {% for book in books|slice:':5' %}
+                        <article class="featured__card swiper-slide">
+                            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="featured__img">
+                            <h2 class="featured__title">{{ book.title }}</h2>
+                            <div class="featured__prices">
+                                {% if book.discount_price %}
+                                <span class="featured__discount">${{ book.price }}</span>
+                                <span class="featured__price">${{ book.discount_price }}</span>
+                                {% else %}
+                                <span class="featured__price">${{ book.price }}</span>
+                                {% endif %}
+                            </div>
+        
+                            <button class="button" onclick="addToCart({{ book.id }})">Add To Cart</button>
+                            <div class="featured__actions">
+                                <button><i class="ri-search-2-line"></i></button>
+                                <button class="favorite-button {% if book in request.user.favorites.all %}active{% endif %}" onclick="toggleFavorite({{ book.id }}, this)">
+                                    <i class="ri-heart-{% if book in request.user.favorites.all %}fill{% else %}line{% endif %} favorite-icon"></i>
+                                </button>
+                                <button onclick="window.location.href='{% url 'book_details' book.id %}'">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-button-prev">
+                        <i class="ri-arrow-left-s-line"></i>
+                    </div>
+                    <div class="swiper-button-next">
+                        <i class="ri-arrow-right-s-line"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Include Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

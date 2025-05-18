@@ -1,0 +1,230 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites</title>
+    <!-- FavIcon -->
+    <link rel="shortcut icon" href="{% static 'image/favicon.png' %}" type="image/x-icon">
+    <!-- REMIX ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}" />
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="{% url 'index' %}" class="nav__logo">
+                <i class="ri-book-marked-fill"></i>E-Book
+            </a>
+            <div class="nav__menu">
+                <button id="back-button" class="button"><i class="ri-arrow-left-line"></i> Back</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <section class="favorites section">
+            <h2 class="section__title">Your Favorites</h2>
+            <div class="favorites__container container grid" id="favorites-container">
+                {% if is_empty %}
+                <div class="favorites-empty" style="grid-column: 1 / -1; text-align: center;">
+                    <p>You don't have any favorites yet.</p>
+                    <a href="{% url 'index' %}" class="button">Browse Books</a>
+                </div>
+                {% else %}
+                {% for item in favorite_items %}
+                <article class="featured__card" data-id="{{ item.book.id }}">
+                    <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}" class="featured__img">
+                    <h2 class="featured__title">{{ item.book.title }}</h2>
+                    <div class="featured__prices">
+                        <span class="featured__price">${{ item.book.price }}</span>
+                    </div>
+                    <button class="button remove-favorite-button" onclick="removeFromFavorites({{ item.book.id }})">Remove from Favorites</button>
+                </article>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+    </main>
+    <section class="last-section"></section>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container container grid">
+            <div>
+                <a href="#" class="footer__logo">
+                    <i class="ri-book-3-line"></i>E-Book
+                </a>
+                <p class="footer__description">The best place to find your next read.</p>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">About Us</h3>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">About Us</a></li>
+                    <li><a href="#" class="footer__link">Contact</a></li>
+                    <li><a href="#" class="footer__link">Privacy Policy</a></li>
+                    <li><a href="#" class="footer__link">Terms of Service</a></li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Library</h3>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">Blogs</a></li>
+                    <li><a href="#" class="footer__link">Community</a></li>
+                    <li><a href="#" class="footer__link">Our Team</a></li>
+                    <li><a href="#" class="footer__link">Help Center</a></li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Contact</h3>
+                <ul class="footer__links">
+                    <li>
+                        <address class="footer__info">
+                            Cairo, Egypt <br>
+                            Nassr City <br>
+                            1234567890 <br>
+                        </address>
+                    </li>
+                    <li>
+                        <address class="footer__info">
+                            ebook@gmail.com <br>
+                            +20 1234567890 <br>
+                        </address>
+                    </li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Social</h3>
+                <div class="footer__social">
+                    <a href="https://www.facebook.com/" target="_blank" class="footer__social-link">
+                        <i class="ri-facebook-fill"></i>
+                    </a>
+                    <a href="https://www.instagram.com/" target="_blank" class="footer__social-link">
+                        <i class="ri-instagram-fill"></i>
+                    </a>
+                    <a href="https://twitter.com/explore" target="_blank" class="footer__social-link">
+                        <i class="ri-twitter-fill"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+        <span class="footer__copy">
+            All rights reserved &copy; 2023 <a href="{% url 'index' %}" class="footer__link">E-Book</a>.
+        </span>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        function removeFromFavorites(itemId) {
+            // Show loading indicator or disable button
+            const removeButton = document.querySelector(`[data-id="${itemId}"] .remove-favorite-button`);
+            if (removeButton) {
+                removeButton.disabled = true;
+                removeButton.textContent = 'Removing...';
+            }
+            
+            fetch('{% url "remove_favorite" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `book_id=${itemId}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove the item from the DOM
+                    const favoriteCard = document.querySelector(`[data-id="${itemId}"]`);
+                    if (favoriteCard) {
+                        favoriteCard.remove();
+                    }
+                    
+                    // Update favorites count
+                    const favoriteCount = document.querySelector('.favorite-count');
+                    if (data.favorite_count !== undefined && favoriteCount) {
+                        favoriteCount.textContent = data.favorite_count;
+                    }
+                    
+                    // Check if favorites is empty
+                    if (data.favorite_count === 0) {
+                        const favoritesContainer = document.getElementById('favorites-container');
+                        favoritesContainer.innerHTML = `
+                            <div class="favorites-empty" style="grid-column: 1 / -1; text-align: center;">
+                                <p>You don't have any favorites yet.</p>
+                                <a href="{% url 'index' %}" class="button">Browse Books</a>
+                            </div>
+                        `;
+                    }
+                } else {
+                    alert(data.message || 'Failed to remove from favorites');
+                    // Reset button state
+                    if (removeButton) {
+                        removeButton.disabled = false;
+                        removeButton.textContent = 'Remove from Favorites';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while removing the item. Please try again.');
+                // Reset button state
+                if (removeButton) {
+                    removeButton.disabled = false;
+                    removeButton.textContent = 'Remove from Favorites';
+                }
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Initialize back button functionality
+        document.addEventListener('DOMContentLoaded', () => {
+                const backButton = document.getElementById('back-button');
+            if (backButton) {
+                backButton.addEventListener('click', () => {
+                    window.history.back();
+                });
+            }
+            });
+    </script>
+
+    <!-- ScrollReveal-->
+    <script src="{% static 'js/scrollreveal.min.js' %}"></script>
+    
+    <!-- Swiper JS -->
+    <script src="{% static 'js/swiper-bundle.min.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media files (uncomment if you don't want to share media files)
+# media/
+
+# Static files (uncomment if you don't want to share collected static files)
+# static/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# System Files
+.DS_Store
+Thumbs.db 

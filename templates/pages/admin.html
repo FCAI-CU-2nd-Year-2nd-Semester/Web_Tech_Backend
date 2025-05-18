@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <title>Library Admin Dashboard</title>
+</head>
+
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <nav class="nav container">
+            <a href="#" class="nav__logo">
+                <i class="ri-dashboard-fill"></i>Admin Dashboard
+            </a>
+            <div class="nav__actions">
+                <a href="author.html" class="button">
+                    <i class="ri-arrow-left-line"></i> Back to Site
+                </a>
+                <i class="ri-moon-line change-theme" id="theme-button"></i>
+            </div>
+        </nav>
+    </header>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#dashboard" class="nav__link active">
+                            <i class="ri-dashboard-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#books" class="nav__link">
+                            <i class="ri-book-line"></i>
+                            <span>Manage Books</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#users" class="nav__link">
+                            <i class="ri-user-line"></i>
+                            <span>Manage Users</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#orders" class="nav__link">
+                            <i class="ri-shopping-cart-line"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#analytics" class="nav__link">
+                            <i class="ri-line-chart-line"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <section id="dashboard" class="admin-section active">
+                <h2 class="section__title">Dashboard Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="ri-book-2-line"></i>
+                        <h3>Total Books</h3>
+                        <p>1,234</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ri-user-line"></i>
+                        <h3>Active Users</h3>
+                        <p>892</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ri-shopping-cart-line"></i>
+                        <h3>Recent Orders</h3>
+                        <p>56</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ri-money-dollar-circle-line"></i>
+                        <h3>Revenue</h3>
+                        <p>$12,345</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="books" class="admin-section">
+                <h2 class="section__title">Manage Books</h2>
+                <div class="admin-card">
+                    <h3>Add New Book</h3>
+                    <form class="admin-form">
+                        <input type="text" placeholder="Book Title" required>
+                        <input type="text" placeholder="Author" required>
+                        <input type="number" placeholder="Price" required>
+                        
+                        <!-- Book Cover Upload -->
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-content">
+                                <img src="./assets/img/upload_image.png" alt="Upload icon" class="upload-icon">
+                                <p>Drag & drop book cover here or click to browse</p>
+                                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                            </div>
+                            <div class="preview-area" id="previewArea" style="display: none;">
+                                <img id="imagePreview" src="#" alt="Preview">
+                                <button type="button" class="button remove-button" id="removeButton">Remove</button>
+                            </div>
+                        </div>
+                        
+                        <button class="button">Add Book</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="users" class="admin-section">
+                <h2 class="section__title">Manage Users</h2>
+                
+                <!-- Add User Form -->
+                <div class="admin-card">
+                    <h3>Add New User</h3>
+                    <form class="admin-form" id="userForm">
+                        <div class="form-group">
+                            <input type="text" id="userName" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="userEmail" placeholder="Email Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="userPassword" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="userRole" class="role-select">
+                                <option value="member">Member</option>
+                                <option value="librarian">Librarian</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="button">Add User</button>
+                    </form>
+                </div>
+            
+                <!-- Users Table -->
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td>Admin User</td>
+                                    <td>admin@example.com</td>
+                                    <td><span class="role-badge admin">Admin</span></td>
+                                    <td>
+                                        <button class="icon-button edit"><i class="ri-edit-line"></i></button>
+                                        <button class="icon-button delete"><i class="ri-delete-bin-line"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="orders" class="admin-section">
+                <h2 class="section__title">Recent Orders</h2>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Book</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#1234</td>
+                                    <td>The Great Adventure</td>
+                                    <td>$24.99</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="analytics" class="admin-section">
+                <h2 class="section__title">Analytics</h2>
+                <div class="admin-card">
+                    <div class="chart-placeholder">
+                        <p>Sales Chart (Placeholder)</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Dark Mode Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeButton = document.getElementById('theme-button');
+            const body = document.body;
+            
+            // Load saved theme
+            const savedTheme = localStorage.getItem('selected-theme');
+            if(savedTheme) {
+                body.classList.toggle('dark-theme', savedTheme === 'dark');
+                themeButton.classList.toggle('ri-sun-line', savedTheme === 'dark');
+            }
+
+            // Toggle theme
+            themeButton.addEventListener('click', function() {
+                body.classList.toggle('dark-theme');
+                themeButton.classList.toggle('ri-moon-line');
+                themeButton.classList.toggle('ri-sun-line');
+                
+                // Save theme
+                localStorage.setItem('selected-theme', 
+                    body.classList.contains('dark-theme') ? 'dark' : 'light'
+                );
+            });
+        });
+
+        // Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.admin-nav .nav__link');
+            const sections = document.querySelectorAll('.admin-section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(section => section.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelector(this.getAttribute('href')).classList.add('active');
+                });
+            });
+        });
+
+        // User Management
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('userForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('userName').value;
+                const email = document.getElementById('userEmail').value;
+                const role = document.getElementById('userRole').value;
+                
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${name}</td>
+                    <td>${email}</td>
+                    <td><span class="role-badge ${role}">${role.charAt(0).toUpperCase() + role.slice(1)}</span></td>
+                    <td>
+                        <button class="icon-button edit"><i class="ri-edit-line"></i></button>
+                        <button class="icon-button delete"><i class="ri-delete-bin-line"></i></button>
+                    </td>
+                `;
+                
+                document.getElementById('usersTableBody').appendChild(newRow);
+                this.reset();
+                showToast('User added successfully!');
+            });
+
+            document.addEventListener('click', function(e) {
+                if(e.target.closest('.delete')) {
+                    e.target.closest('tr').remove();
+                    showToast('User deleted successfully!');
+                }
+            });
+
+            function showToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        });
+
+        // Book Cover Upload
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const previewArea = document.getElementById('previewArea');
+            const imagePreview = document.getElementById('imagePreview');
+            const removeButton = document.getElementById('removeButton');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files?.[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        uploadArea.querySelector('.upload-content').style.display = 'none';
+                        previewArea.style.display = 'block';
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('highlight');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('highlight');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('highlight');
+                const file = e.dataTransfer.files[0];
+                if (file?.type.match('image.*')) {
+                    fileInput.files = e.dataTransfer.files;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        uploadArea.querySelector('.upload-content').style.display = 'none';
+                        previewArea.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            removeButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fileInput.value = '';
+                previewArea.style.display = 'none';
+                uploadArea.querySelector('.upload-content').style.display = 'flex';
+            });
+        });
+
+// Add Book
+        document.addEventListener('DOMContentLoaded', function () {
+                const bookForm = document.querySelector('.admin-form');
+                const fileInput = document.getElementById('fileInput');
+
+                // Handle the "Add Book" button
+                bookForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    // Get book details from the form
+                    const title = bookForm.querySelector('input[placeholder="Book Title"]').value;
+                    const author = bookForm.querySelector('input[placeholder="Author"]').value;
+                    const price = bookForm.querySelector('input[placeholder="Price"]').value;
+                    const image = fileInput.files[0] ? URL.createObjectURL(fileInput.files[0]) : './assets/img/default-book.png';
+
+                    // Create a new book object
+                    const newBook = { id: Date.now(), title, author, price, image };
+
+                    // Save the book to localStorage
+                    const books = JSON.parse(localStorage.getItem('books')) || [];
+                    books.push(newBook);
+                    localStorage.setItem('books', JSON.stringify(books));
+
+                    // Reset the form
+                    bookForm.reset();
+                    document.getElementById('previewArea').style.display = 'none';
+                    document.getElementById('uploadArea').querySelector('.upload-content').style.display = 'flex';
+
+                    // Show success message
+                    alert('Book added successfully!');
+                });
+            });
+    </script>
+</body>
+</html>

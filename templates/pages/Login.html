@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/Login_Register.css' %}">
+</head>
+
+<body>
+    <div id="container">
+        <div id="imageContainer">
+            <img src="{% static 'image/Login_Resiter_Illustratoin_2.svg' %}" alt="">
+        </div>
+        <div id="formContainer">
+            <h1>Login</h1>
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" id="loginButton">Login</button>
+            </form>
+            <div style="text-align: right;" class="center">
+                <a href="{% url 'forgot_password' %}" class="ForgetPassword">Forgot your password?</a>
+            </div>
+            <div class="or-divider">OR</div>
+            <button><img src="{% static 'image/facebook3.svg' %}" alt="Facebook">Login with Facebook</button>
+            <button><img src="{% static 'image/google.svg' %}" alt="Google">Login with Google</button>
+            <button><img src="{% static 'image/linkedin.svg' %}" alt="LinkedIn">Login with LinkedIn</button>
+            <p> Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+        </div>
+    </div>
+    <script src="{% static 'js/authorization.js' %}"></script>
+</body>
+</html>

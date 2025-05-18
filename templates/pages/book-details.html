@@ -1,0 +1,305 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FavIcon -->
+    <link rel="shortcut icon" href="{% static 'image/favicon.png' %}" type="image/x-icon">
+    <!-- REMIX ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{{ book.title }} - Book Details</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="{% url 'index' %}" class="nav__logo">
+                <i class="ri-book-marked-fill"></i>E-Book
+            </a>
+            <div class="nav__menu">
+                <button id="back-button" class="button" onclick="history.back()"><i class="ri-arrow-left-line"></i> Back</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <section class="book-details section">
+            <div class="book-details__container container grid">
+                <!-- Book Cover -->
+                <div class="book-details__image">
+                    <img src="{{ book.cover_image.url }}" alt="Cover of {{ book.title }}" class="book-details__img">
+                </div>
+        
+                <!-- Book Info -->
+                <div class="book-details__content">
+                    <h1 class="book-details__title">{{ book.title }}</h1>
+                    <p class="book-details__author">By {{ book.author.name }}</p>
+        
+                    <div class="book-details__prices">
+                        {% if book.discount_price %}
+                            <span class="book-details__price">${{ book.discount_price }}</span>
+                            <span class="book-details__discount">${{ book.price }}</span>
+                        {% else %}
+                            <span class="book-details__price">${{ book.price }}</span>
+                        {% endif %}
+                    </div>
+        
+                    <div class="book-details__description">
+                        <h3 class="book-details__subtitle">Description</h3>
+                        <p class="book-details__text">{{ book.description }}</p>
+                    </div>
+        
+                    <div class="book-details__meta">
+                        <div class="book-details__info">
+                            <span class="book-details__label">Format:</span>
+                            <span class="book-details__value">{% if book.pdf_file %}eBook{% else %}Print{% endif %}</span>
+                        </div>
+                        <div class="book-details__info">
+                            <span class="book-details__label">Status:</span>
+                            <span class="book-details__value">{% if book.is_available %}In Stock{% else %}Out of Stock{% endif %}</span>
+                        </div>
+                        <div class="book-details__info">
+                            <span class="book-details__label">Added:</span>
+                            <span class="book-details__value">{{ book.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="book-details__actions">
+                        <button id="add-to-cart-btn" class="button" {% if not book.is_available %}disabled{% endif %}>
+                            {% if in_cart %}Remove from Cart{% else %}Add to Cart{% endif %}
+                        </button>
+                        <button id="favorite-btn" class="button">
+                            {% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container container grid">
+            <div>
+                <a href="#" class="footer__logo">
+                    <i class="ri-book-3-line"></i>E-Book
+                </a>
+                <p class="footer__description">The best place to find your next read.</p>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">About Us</h3>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">About Us</a></li>
+                    <li><a href="#" class="footer__link">Contact</a></li>
+                    <li><a href="#" class="footer__link">Privacy Policy</a></li>
+                    <li><a href="#" class="footer__link">Terms of Service</a></li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Library</h3>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">Blogs</a></li>
+                    <li><a href="#" class="footer__link">Community</a></li>
+                    <li><a href="#" class="footer__link">Our Team</a></li>
+                    <li><a href="#" class="footer__link">Help Center</a></li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Contact</h3>
+                <ul class="footer__links">
+                    <li>
+                        <address class="footer__info">
+                            Cairo, Egypt <br>
+                            Nassr City <br>
+                            1234567890 <br>
+                        </address>
+                    </li>
+                    <li>
+                        <address class="footer__info">
+                            ebook@gmail.com <br>
+                            +20 1234567890 <br>
+                        </address>
+                    </li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Social</h3>
+                <div class="footer__social">
+                    <a href="https://www.facebook.com/" target="_blank" class="footer__social-link">
+                        <i class="ri-facebook-fill"></i>
+                    </a>
+                    <a href="https://www.instagram.com/" target="_blank" class="footer__social-link">
+                        <i class="ri-instagram-fill"></i>
+                    </a>
+                    <a href="https://twitter.com/explore" target="_blank" class="footer__social-link">
+                        <i class="ri-twitter-fill"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+        <span class="footer__copy">
+            All rights reserved &copy; 2023 <a href="{% url 'index' %}" class="footer__link">E-Book</a>.
+        </span>
+    </footer>
+
+    <script>
+        // Get CSRF token for AJAX requests
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Add to cart function
+        function addToCart(bookId) {
+            // Disable button and show loading state
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            const originalText = addToCartBtn.textContent;
+            addToCartBtn.disabled = true;
+            addToCartBtn.classList.add('button--loading');
+            addToCartBtn.textContent = 'Adding to Cart...';
+            
+            fetch('{% url "add_to_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `book_id=${bookId}&quantity=1`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.statusText || 'Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update button state
+                    addToCartBtn.classList.remove('button--loading');
+                    addToCartBtn.textContent = 'Remove from Cart';
+                    addToCartBtn.disabled = false;
+                } else {
+                    // Show error state
+                    addToCartBtn.classList.remove('button--loading');
+                    addToCartBtn.classList.add('button--error');
+                    addToCartBtn.textContent = data.message || 'Failed to add to cart';
+                    setTimeout(() => {
+                        addToCartBtn.classList.remove('button--error');
+                        addToCartBtn.textContent = originalText;
+                        addToCartBtn.disabled = false;
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Show error state
+                addToCartBtn.classList.remove('button--loading');
+                addToCartBtn.classList.add('button--error');
+                addToCartBtn.textContent = 'Error occurred';
+                setTimeout(() => {
+                    addToCartBtn.classList.remove('button--error');
+                    addToCartBtn.textContent = originalText;
+                    addToCartBtn.disabled = false;
+                }, 2000);
+            });
+        }
+
+        // Toggle favorite function
+        function toggleFavorite(bookId, isFavorite) {
+            // Disable button and show loading state
+            const favoriteBtn = document.getElementById('favorite-btn');
+            const originalText = favoriteBtn.textContent;
+            favoriteBtn.disabled = true;
+            favoriteBtn.classList.add('button--loading');
+            favoriteBtn.textContent = isFavorite ? 'Removing from Favorites...' : 'Adding to Favorites...';
+            
+            const url = isFavorite ? '{% url "remove_favorite" %}' : '{% url "add_favorite" %}';
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `book_id=${bookId}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.statusText || 'Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update button state
+                    favoriteBtn.classList.remove('button--loading');
+                    favoriteBtn.textContent = isFavorite ? 'Add to Favorites' : 'Remove from Favorites';
+                    favoriteBtn.disabled = false;
+                } else {
+                    // Show error state
+                    favoriteBtn.classList.remove('button--loading');
+                    favoriteBtn.classList.add('button--error');
+                    favoriteBtn.textContent = data.message || 'Failed to update favorites';
+                    setTimeout(() => {
+                        favoriteBtn.classList.remove('button--error');
+                        favoriteBtn.textContent = originalText;
+                        favoriteBtn.disabled = false;
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Show error state
+                favoriteBtn.classList.remove('button--loading');
+                favoriteBtn.classList.add('button--error');
+                favoriteBtn.textContent = 'Error occurred';
+                setTimeout(() => {
+                    favoriteBtn.classList.remove('button--error');
+                    favoriteBtn.textContent = originalText;
+                    favoriteBtn.disabled = false;
+                }, 2000);
+            });
+        }
+
+        // Set up action buttons
+        const bookId = '{{ book.id }}';
+        const isFavorite = {{ is_favorite|yesno:"true,false" }};
+        const inCart = {{ in_cart|yesno:"true,false" }};
+        
+        // Add to cart button
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', () => addToCart(bookId));
+        }
+        
+        // Favorite button
+        const favoriteBtn = document.getElementById('favorite-btn');
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', () => toggleFavorite(bookId, isFavorite));
+        }
+    </script>
+    
+    <!-- Include existing scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

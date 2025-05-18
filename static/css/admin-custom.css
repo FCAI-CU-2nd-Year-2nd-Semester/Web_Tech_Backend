@@ -1,0 +1,316 @@
+:root {
+    --primary-color: #754FFE;
+    --secondary-color: #198754;
+    --accent-color: #F7C32E;
+    --success-color: #00B517;
+    --info-color: #0DCAF0;
+    --warning-color: #F7C32E;
+    --danger-color: #DC3545;
+    --light-color: #F5F4F8;
+    --dark-color: #1E293B;
+
+    /* Admin specific colors */
+    --header-bg: var(--primary-color);
+    --header-color: white;
+    --header-link-color: var(--light-color);
+    --header-branding-color: white;
+    --accent: var(--accent-color);
+
+    /* Module colors */
+    --primary-fg: var(--dark-color);
+    --body-fg: var(--dark-color);
+    --body-bg: #fff;
+    --body-quiet-color: #666;
+    --body-loud-color: var(--primary-color);
+
+    /* Link colors */
+    --link-fg: var(--primary-color);
+    --link-hover-color: var(--secondary-color);
+    --link-selected-fg: var(--secondary-color);
+
+    /* Message colors */
+    --message-success-bg: var(--success-color);
+    --message-warning-bg: var(--warning-color);
+    --message-error-bg: var(--danger-color);
+}
+
+/* Text Colors */
+body {
+    color: var(--body-fg);
+}
+
+a:link,
+a:visited {
+    color: var(--link-fg);
+}
+
+a:hover {
+    color: var(--link-hover-color);
+}
+
+/* Header Styles */
+#header {
+    background: var(--header-bg);
+    color: var(--header-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#branding h1 {
+    color: var(--header-branding-color);
+}
+
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: var(--header-branding-color);
+}
+
+#branding h1 i {
+    margin-right: 10px;
+}
+
+/* Content Styles */
+#content {
+    padding: 20px;
+}
+
+.module {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.module h2,
+.module caption {
+    background: var(--primary-color);
+    color: white;
+    padding: 12px;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Table Styles */
+thead th {
+    background: var(--light-color);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: var(--light-color);
+}
+
+tbody tr:hover {
+    background-color: rgba(117, 79, 254, 0.05);
+}
+
+/* Form Styles */
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+.submit-row input:hover {
+    background: var(--secondary-color);
+}
+
+.button.default,
+input[type=submit].default {
+    background: var(--success-color);
+}
+
+.button.default:hover,
+input[type=submit].default:hover {
+    background: var(--secondary-color);
+}
+
+/* Form Fields */
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+input[type=tel],
+textarea,
+select,
+.vTextField {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    color: var(--body-fg);
+}
+
+.help,
+p.help {
+    color: var(--body-quiet-color);
+}
+
+/* List Styles */
+#changelist-filter h2 {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 4px 4px 0 0;
+}
+
+#changelist-filter li.selected a {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+#changelist-filter a:hover {
+    color: var(--link-hover-color);
+}
+
+.paginator a:link,
+.paginator a:visited {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.paginator a:hover {
+    background: var(--secondary-color);
+}
+
+/* Dashboard Styles */
+.dashboard .module table th {
+    background: var(--light-color);
+    color: var(--primary-color);
+}
+
+.dashboard .module table tr:hover {
+    background: rgba(117, 79, 254, 0.05);
+}
+
+/* Message Styles */
+.messagelist li {
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 12px;
+    color: white;
+}
+
+.messagelist li.success {
+    background: var(--success-color);
+}
+
+.messagelist li.warning {
+    background: var(--warning-color);
+    color: var(--dark-color);
+}
+
+.messagelist li.error {
+    background: var(--danger-color);
+}
+
+/* Login Form */
+.login #header {
+    height: auto;
+    padding: 15px;
+}
+
+.login #content {
+    padding: 20px;
+}
+
+.login .form-row {
+    padding: 4px 0;
+}
+
+.login .submit-row {
+    padding: 15px 0;
+    text-align: center;
+}
+
+/* Object Tools */
+.object-tools a {
+    background: var(--primary-color);
+    color: white;
+    font-weight: normal;
+}
+
+.object-tools a:hover {
+    background: var(--secondary-color);
+}
+
+/* Breadcrumbs */
+div.breadcrumbs {
+    background: var(--secondary-color);
+    color: white;
+    padding: 15px 20px;
+}
+
+div.breadcrumbs a {
+    color: white;
+}
+
+div.breadcrumbs a:hover {
+    color: var(--accent-color);
+}
+
+/* Delete Confirmation */
+.delete-confirmation form .cancel-link {
+    background: var(--body-quiet-color);
+    color: white;
+}
+
+.delete-confirmation form .cancel-link:hover {
+    background: var(--dark-color);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    #header {
+        padding: 10px 20px;
+    }
+
+    #content {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 767px) {
+    #header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #user-tools {
+        margin: 10px 0;
+    }
+}
+
+/* Selection Color */
+::selection {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}

@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <!-- FavIcon -->
+    <link rel="shortcut icon" href="{% static 'image/favicon.png' %}" type="image/x-icon">
+    <!-- REMIX ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- swiper css -->
+    <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}" />
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="{% url 'index' %}" class="nav__logo">
+                <i class="ri-book-marked-fill"></i>E-Book
+            </a>
+            <div class="nav__menu">
+                <button id="back-button" class="button"><i class="ri-arrow-left-line"></i> Back</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <section class="cart section">
+            <h2 class="section__title">Your Cart</h2>
+            <div class="cart__container container" id="cart-container">
+                {% if is_empty %}
+                <div class="cart-empty">
+                    <p>Your cart is empty.</p>
+                    <a href="{% url 'index' %}" class="button">Browse Books</a>
+                </div>
+                {% else %}
+                {% for item in cart_items %}
+                <div class="cart-item" data-id="{{ item.book.id }}">
+                    <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}" class="cart-item__img">
+                    <div class="cart-item__details">
+                        <h3 class="cart-item__title">{{ item.book.title }}</h3>
+                        <p class="cart-item__price">${{ item.book.price }}</p>
+                        <p class="cart-item__quantity">Quantity: {{ item.quantity }}</p>
+                    </div>
+                    <button class="cart-item__remove" onclick="removeFromCart({{ item.book.id }})">Remove</button>
+                </div>
+                {% endfor %}
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <p>Total: <span id="cart-total">${{ total }}</span></p>
+                    <button class="button checkout-button">Proceed to Checkout</button>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+    
+    <section class="last-section"></section>
+
+    <!--======================= FOOTER =================-->
+    <footer class="footer">
+        <div class="footer__container container grid">
+            <div>
+                <a href="#" class="footer__logo">
+                    <i class="ri-book-3-line"></i>E-Book
+                </a>
+                <p class="footer__description">The best place to find your next read.</p>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">About Us</h3>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">About Us</a></li>
+                    <li><a href="#" class="footer__link">Contact</a></li>
+                    <li><a href="#" class="footer__link">Privacy Policy</a></li>
+                    <li><a href="#" class="footer__link">Terms of Service</a></li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Library</h3>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">Blogs</a></li>
+                    <li><a href="#" class="footer__link">Community</a></li>
+                    <li><a href="#" class="footer__link">Our Team</a></li>
+                    <li><a href="#" class="footer__link">Help Center</a></li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Contact</h3>
+                <ul class="footer__links">
+                    <li>
+                        <address class="footer__info">
+                            Cairo, Egypt <br>
+                            Nassr City <br>
+                            1234567890 <br>
+                        </address>
+                    </li>
+                    <li>
+                        <address class="footer__info">
+                            ebook@gmail.com <br>
+                            +20 1234567890 <br>
+                        </address>
+                    </li>
+                </ul>
+            </div>
+    
+            <div>
+                <h3 class="footer__title">Social</h3>
+                <div class="footer__social">
+                    <a href="https://www.facebook.com/" target="_blank" class="footer__social-link">
+                        <i class="ri-facebook-fill"></i>
+                    </a>
+                    <a href="https://www.instagram.com/" target="_blank" class="footer__social-link">
+                        <i class="ri-instagram-fill"></i>
+                    </a>
+                    <a href="https://twitter.com/explore" target="_blank" class="footer__social-link">
+                        <i class="ri-twitter-fill"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+        <span class="footer__copy">
+            All rights reserved &copy; 2023 <a href="{% url 'index' %}" class="footer__link">E-Book</a>.
+        </span>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        function removeFromCart(itemId) {
+            // Show loading indicator or disable button
+            const removeButton = document.querySelector(`[data-id="${itemId}"] .cart-item__remove`);
+            if (removeButton) {
+                removeButton.disabled = true;
+                removeButton.textContent = 'Removing...';
+            }
+            
+            fetch('{% url "remove_from_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `book_id=${itemId}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove the item from the DOM
+                    const cartItem = document.querySelector(`[data-id="${itemId}"]`);
+                    if (cartItem) {
+                        cartItem.remove();
+                    }
+                    
+                    // Update cart count
+                    const cartCount = document.querySelector('.cart-count');
+                    if (data.cart_count !== undefined && cartCount) {
+                        cartCount.textContent = data.cart_count;
+                    }
+                    
+                    // Update total
+                    const cartTotal = document.getElementById('cart-total');
+                    if (data.total !== undefined && cartTotal) {
+                        cartTotal.textContent = `$${data.total}`;
+                    }
+                    
+                    // Check if cart is empty
+                    if (data.cart_count === 0) {
+                        const cartContainer = document.getElementById('cart-container');
+                        cartContainer.innerHTML = `
+                            <div class="cart-empty">
+                                <p>Your cart is empty.</p>
+                                <a href="{% url 'index' %}" class="button">Browse Books</a>
+                            </div>
+                        `;
+                    }
+                } else {
+                    alert(data.message || 'Failed to remove item from cart');
+                    // Reset button state
+                    if (removeButton) {
+                        removeButton.disabled = false;
+                        removeButton.textContent = 'Remove';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while removing the item. Please try again.');
+                // Reset button state
+                if (removeButton) {
+                    removeButton.disabled = false;
+                    removeButton.textContent = 'Remove';
+                }
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Initialize back button functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const backButton = document.getElementById('back-button');
+            if (backButton) {
+            backButton.addEventListener('click', () => {
+                    window.history.back();
+            });
+            }
+        });
+    </script>
+</body>
+
+</html>

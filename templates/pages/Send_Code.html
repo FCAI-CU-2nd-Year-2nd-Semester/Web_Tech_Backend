@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Send Code</title>
+    <link rel="stylesheet" href="{% static 'css/Login_Register.css' %}">
+</head>
+
+<body>
+    <div id="container">
+        <div id="imageContainer">
+            <img src="{% static 'image/Sind Code.svg' %}" alt="">
+        </div>
+        <div id="formContainer">
+            <h1>Check your email</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="code-container">
+                    <input type="text" name="code1" maxlength="1" class="code-input" required>
+                    <input type="text" name="code2" maxlength="1" class="code-input" required>
+                    <input type="text" name="code3" maxlength="1" class="code-input" required>
+                    <input type="text" name="code4" maxlength="1" class="code-input" required>
+                    <input type="text" name="code5" maxlength="1" class="code-input" required>
+                    <input type="text" name="code6" maxlength="1" class="code-input" required>
+                </div>
+                <button type="submit">Continue</button>
+            </form>
+            <div style="text-align: right;" class="center">
+            </div>
+            <p>Resend code in : 0:11</p>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll(".code-input").forEach((input) => {
+            input.addEventListener("input", () => {
+                CheckDigit(input);
+            });
+        });
+
+        function CheckDigit(input) {
+            let digit = input.value;
+            // Keep only the first digit
+            digit = digit.replace(/[^0-9]/g, "").slice(0, 1);
+            input.value = digit;
+        }
+    </script>
+</body>
+</html>
