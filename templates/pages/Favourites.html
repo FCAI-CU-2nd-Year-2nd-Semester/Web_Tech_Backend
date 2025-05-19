@@ -42,7 +42,7 @@
                 {% if is_empty %}
                 <div class="favorites-empty" style="grid-column: 1 / -1; text-align: center;">
                     <p>You don't have any favorites yet.</p>
-                    <a href="{% url 'index' %}" class="button">Browse Books</a>
+                    <a href="{% url 'books' %}" class="button" style = "margin-top : 2rem">Browse Books</a>
                 </div>
                 {% else %}
                 {% for item in favorite_items %}

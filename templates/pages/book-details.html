@@ -74,12 +74,12 @@
                             <span class="book-details__value">{{ book.created_at|date:"M d, Y" }}</span>
                         </div>
                     </div>
-                    
                     <div class="book-details__actions">
-                        <button id="add-to-cart-btn" class="button" {% if not book.is_available %}disabled{% endif %}>
-                            {% if in_cart %}Remove from Cart{% else %}Add to Cart{% endif %}
+                        <button class="button" onclick="addToCart({{ book.id }}, event)" {% if not book.is_available %}disabled{% endif %}>
+                            ADD TO CART
                         </button>
-                        <button id="favorite-btn" class="button">
+                        <button class="button favorite-button {% if is_favorite %}active{% endif %}" onclick="toggleFavorite({{ book.id }}, this)">
+                            <i class="ri-heart-{% if is_favorite %}fill{% else %}line{% endif %} favorite-icon"></i>
                             {% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}
                         </button>
                     </div>
@@ -156,10 +156,7 @@
         <span class="footer__copy">
             All rights reserved &copy; 2023 <a href="{% url 'index' %}" class="footer__link">E-Book</a>.
         </span>
-    </footer>
-
-    <script>
-        // Get CSRF token for AJAX requests
+    </footer>    <script>
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -175,14 +172,19 @@
             return cookieValue;
         }
 
-        // Add to cart function
-        function addToCart(bookId) {
-            // Disable button and show loading state
-            const addToCartBtn = document.getElementById('add-to-cart-btn');
-            const originalText = addToCartBtn.textContent;
-            addToCartBtn.disabled = true;
-            addToCartBtn.classList.add('button--loading');
-            addToCartBtn.textContent = 'Adding to Cart...';
+        function addToCart(bookId, event) {
+            // Prevent any default behavior
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Find the button that was clicked
+            const button = event ? event.target.closest('button') : document.querySelector(`[onclick*="addToCart(${bookId})"]`);
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.classList.add('button--loading');
+            button.textContent = 'Adding...';
             
             fetch('{% url "add_to_cart" %}', {
                 method: 'POST',
@@ -194,52 +196,63 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(response.statusText || 'Network response was not ok');
+                    throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
             .then(data => {
                 if (data.success) {
-                    // Update button state
-                    addToCartBtn.classList.remove('button--loading');
-                    addToCartBtn.textContent = 'Remove from Cart';
-                    addToCartBtn.disabled = false;
+                    // Show success message with animation
+                    button.classList.remove('button--loading');
+                    button.classList.add('button--success');
+                    button.innerHTML = '<i class="ri-check-line"></i> Added';
+                    
+                    // Update cart count with animation
+                    const cartCount = document.querySelector('.cart-count');
+                    if (data.cart_count !== undefined && cartCount) {
+                        cartCount.textContent = data.cart_count;
+                        cartCount.classList.add('bounce');
+                        setTimeout(() => cartCount.classList.remove('bounce'), 1000);
+                    }
+                    
+                    // Reset button after delay
+                    setTimeout(() => {
+                        button.classList.remove('button--success');
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }, 2000);
                 } else {
                     // Show error state
-                    addToCartBtn.classList.remove('button--loading');
-                    addToCartBtn.classList.add('button--error');
-                    addToCartBtn.textContent = data.message || 'Failed to add to cart';
+                    button.classList.remove('button--loading');
+                    button.classList.add('button--error');
+                    button.textContent = 'Failed';
                     setTimeout(() => {
-                        addToCartBtn.classList.remove('button--error');
-                        addToCartBtn.textContent = originalText;
-                        addToCartBtn.disabled = false;
+                        button.classList.remove('button--error');
+                        button.innerHTML = originalText;
+                        button.disabled = false;
                     }, 2000);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Show error state
-                addToCartBtn.classList.remove('button--loading');
-                addToCartBtn.classList.add('button--error');
-                addToCartBtn.textContent = 'Error occurred';
+                button.classList.remove('button--loading');
+                button.classList.add('button--error');
+                button.textContent = 'Error';
                 setTimeout(() => {
-                    addToCartBtn.classList.remove('button--error');
-                    addToCartBtn.textContent = originalText;
-                    addToCartBtn.disabled = false;
+                    button.classList.remove('button--error');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
                 }, 2000);
             });
         }
 
-        // Toggle favorite function
-        function toggleFavorite(bookId, isFavorite) {
-            // Disable button and show loading state
-            const favoriteBtn = document.getElementById('favorite-btn');
-            const originalText = favoriteBtn.textContent;
-            favoriteBtn.disabled = true;
-            favoriteBtn.classList.add('button--loading');
-            favoriteBtn.textContent = isFavorite ? 'Removing from Favorites...' : 'Adding to Favorites...';
+        function toggleFavorite(bookId, button) {
+            const icon = button.querySelector('.favorite-icon');
+            const isActive = button.classList.contains('active');
+            const url = isActive ? '{% url "remove_favorite" %}' : '{% url "add_favorite" %}';
             
-            const url = isFavorite ? '{% url "remove_favorite" %}' : '{% url "add_favorite" %}';
+            button.disabled = true;
+            
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -250,57 +263,38 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(response.statusText || 'Network response was not ok');
+                    throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
-            .then(data => {
-                if (data.success) {
-                    // Update button state
-                    favoriteBtn.classList.remove('button--loading');
-                    favoriteBtn.textContent = isFavorite ? 'Add to Favorites' : 'Remove from Favorites';
-                    favoriteBtn.disabled = false;
+            .then(data => {                if (data.success) {
+                    // Toggle active state and icon
+                    button.classList.toggle('active');
+                    icon.classList.toggle('ri-heart-fill');
+                    icon.classList.toggle('ri-heart-line');
+                    
+                    // Update button text
+                    const text = button.lastChild; // Get the text node
+                    text.textContent = isActive ? ' Add to Favorites' : ' Remove from Favorites';
+                    
+                    // Update favorites count with animation
+                    const favoriteCount = document.querySelector('.favorite-count');
+                    if (data.favorite_count !== undefined && favoriteCount) {
+                        favoriteCount.textContent = data.favorite_count;
+                        favoriteCount.classList.add('bounce');
+                        setTimeout(() => favoriteCount.classList.remove('bounce'), 1000);
+                    }
                 } else {
-                    // Show error state
-                    favoriteBtn.classList.remove('button--loading');
-                    favoriteBtn.classList.add('button--error');
-                    favoriteBtn.textContent = data.message || 'Failed to update favorites';
-                    setTimeout(() => {
-                        favoriteBtn.classList.remove('button--error');
-                        favoriteBtn.textContent = originalText;
-                        favoriteBtn.disabled = false;
-                    }, 2000);
+                    alert(data.message || 'Failed to update favorites');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Show error state
-                favoriteBtn.classList.remove('button--loading');
-                favoriteBtn.classList.add('button--error');
-                favoriteBtn.textContent = 'Error occurred';
-                setTimeout(() => {
-                    favoriteBtn.classList.remove('button--error');
-                    favoriteBtn.textContent = originalText;
-                    favoriteBtn.disabled = false;
-                }, 2000);
+                alert('An error occurred. Please try again.');
+            })
+            .finally(() => {
+                button.disabled = false;
             });
-        }
-
-        // Set up action buttons
-        const bookId = '{{ book.id }}';
-        const isFavorite = {{ is_favorite|yesno:"true,false" }};
-        const inCart = {{ in_cart|yesno:"true,false" }};
-        
-        // Add to cart button
-        const addToCartBtn = document.getElementById('add-to-cart-btn');
-        if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', () => addToCart(bookId));
-        }
-        
-        // Favorite button
-        const favoriteBtn = document.getElementById('favorite-btn');
-        if (favoriteBtn) {
-            favoriteBtn.addEventListener('click', () => toggleFavorite(bookId, isFavorite));
         }
     </script>
     

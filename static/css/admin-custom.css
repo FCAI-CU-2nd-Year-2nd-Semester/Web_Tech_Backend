@@ -1,13 +1,13 @@
 :root {
-    --primary-color: #754FFE;
-    --secondary-color: #198754;
-    --accent-color: #F7C32E;
-    --success-color: #00B517;
-    --info-color: #0DCAF0;
-    --warning-color: #F7C32E;
-    --danger-color: #DC3545;
-    --light-color: #F5F4F8;
-    --dark-color: #1E293B;
+    --primary-color: var(--first-color);
+    --secondary-color: var(--title-color);
+    --accent-color: var(--text-color);
+    --success-color: var(--first-color);
+    --info-color: var(--text-color);
+    --warning-color: var(--text-color);
+    --danger-color: hsl(0, 62%, 56%);
+    --light-color: var(--body-color);
+    --dark-color: var(--title-color);
 
     /* Admin specific colors */
     --header-bg: var(--primary-color);

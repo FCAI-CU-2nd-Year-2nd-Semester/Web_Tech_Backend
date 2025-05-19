@@ -42,7 +42,7 @@
                 {% if is_empty %}
                 <div class="cart-empty">
                     <p>Your cart is empty.</p>
-                    <a href="{% url 'index' %}" class="button">Browse Books</a>
+                    <a href="{% url 'books' %}" class="button" style="margin-top: 2rem">Browse Books</a>
                 </div>
                 {% else %}
                 {% for item in cart_items %}
@@ -189,7 +189,7 @@
                         cartContainer.innerHTML = `
                             <div class="cart-empty">
                                 <p>Your cart is empty.</p>
-                                <a href="{% url 'index' %}" class="button">Browse Books</a>
+                                <a href="{% url 'index' %}" class="button" style="margin-top: 2rem">Browse Books</a>
                             </div>
                         `;
                     }

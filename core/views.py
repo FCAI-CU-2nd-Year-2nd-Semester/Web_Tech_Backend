@@ -68,14 +68,11 @@ def forgot_password_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         
-        print(f"\n==== FORGOT PASSWORD DEBUG ====")
-        print(f"Attempting reset for email: {email}")
         
         # Check if user with this email exists
         try:
             user = User.objects.get(email=email)
             
-            print(f"User found: ID={user.id}, Username={user.username}, Email={user.email}")
             
             # Generate a random 6-digit code
             verification_code = ''.join(random.choices(string.digits, k=6))
@@ -105,14 +102,9 @@ def forgot_password_view(request):
                 
                 return redirect('send_code')
             except Exception as e:
-                print(f"EMAIL ERROR: {str(e)}")  # Log the error
-                print("==========================\n")
                 messages.error(request, f'Failed to send verification code. Error: {str(e)}')
                 
         except User.DoesNotExist:
-            # For security, don't reveal that the email doesn't exist
-            print(f"User with email '{email}' does not exist in the database")
-            print("==========================\n")
             messages.success(request, 'If your email exists in our system, a verification code has been sent.')
             return redirect('send_code')
             
@@ -124,15 +116,9 @@ def resend_code_view(request):
     user_id = request.session.get('reset_user_id')
     email = request.session.get('reset_email')
     
-    # Debug session info
-    print("\n==== SESSION DEBUG ====")
-    print(f"Session data: {dict(request.session)}")
-    print(f"User ID: {user_id}")
-    print(f"Email: {email}")
-    print("=====================\n")
+
     
     if not user_id or not email:
-        print("ERROR: Missing user_id or email in session")
         return JsonResponse({
             'success': False,
             'message': 'Your session has expired. Please restart the password reset process.'
@@ -157,7 +143,6 @@ def resend_code_view(request):
         print(f"MESSAGE: {message}")
         
         send_mail(subject, message, from_email, recipient_list)
-        print("Email sent successfully\n")
         
         return JsonResponse({
             'success': True,
@@ -165,7 +150,6 @@ def resend_code_view(request):
         })
         
     except Exception as e:
-        print(f"EMAIL RESEND ERROR: {str(e)}")  # Log the error
         return JsonResponse({
             'success': False,
             'message': f'Failed to send verification code: {str(e)}'
@@ -199,12 +183,8 @@ def change_password_view(request):
     # Check if we have a user_id in session
     user_id = request.session.get('reset_user_id')
     
-    print("\n==== CHANGE PASSWORD DEBUG ====")
-    print(f"Session data: {dict(request.session)}")
-    print(f"User ID from session: {user_id}")
     
     if not user_id:
-        print("ERROR: No user_id found in session")
         messages.error(request, 'Password reset session has expired. Please start over.')
         return redirect('forgot_password')
         
@@ -212,18 +192,12 @@ def change_password_view(request):
         new_password1 = request.POST.get('new_password1')
         new_password2 = request.POST.get('new_password2')
         
-        print(f"Attempting to change password for user_id: {user_id}")
-        print(f"Password length: {len(new_password1)}")
-        print(f"Passwords match: {new_password1 == new_password2}")
-        
         # Validate password
         if new_password1 != new_password2:
-            print("ERROR: Passwords do not match")
             messages.error(request, 'Passwords do not match.')
             return render(request, 'pages/ChangePassword.html')
         
         if len(new_password1) < 8:
-            print("ERROR: Password too short")
             messages.error(request, 'Password must be at least 8 characters long.')
             return render(request, 'pages/ChangePassword.html')
             
@@ -234,19 +208,16 @@ def change_password_view(request):
         has_special = any(not c.isalnum() for c in new_password1)
         
         if not (has_uppercase and has_lowercase and has_digit and has_special):
-            print("ERROR: Password doesn't meet complexity requirements")
             messages.error(request, 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.')
             return render(request, 'pages/ChangePassword.html')
         
         try:
             user = User.objects.get(id=user_id)
-            print(f"User found: {user.username} (ID: {user.id})")
             
             # Set the new password
             user.set_password(new_password1)
             user.save()
-            print(f"Password successfully changed for user: {user.username}")
-            
+            messages.success(request, 'Password changed successfully. You can now log in with your new password.')            
             # Clean up session
             if 'reset_code' in request.session:
                 del request.session['reset_code']
@@ -254,20 +225,14 @@ def change_password_view(request):
                 del request.session['reset_user_id']
             if 'reset_email' in request.session:
                 del request.session['reset_email']
-                
-            print("Session data cleared")
-            print("==========================\n")
+            
             
             messages.success(request, 'Your password has been changed successfully. Please log in with your new password.')
             return redirect('login')
         except User.DoesNotExist:
-            print(f"ERROR: User with ID {user_id} not found")
-            print("==========================\n")
             messages.error(request, 'User not found. Please try again.')
             return redirect('forgot_password')
             
-    print("Displaying change password form")
-    print("==========================\n")
     return render(request, 'pages/ChangePassword.html')
 
 @login_required(login_url='login')
