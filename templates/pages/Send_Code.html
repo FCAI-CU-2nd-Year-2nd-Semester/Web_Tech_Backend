@@ -15,7 +15,16 @@
         </div>
         <div id="formContainer">
             <h1>Check your email</h1>
-            <form method="post">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form method="post" id="verificationForm">
                 {% csrf_token %}
                 <div class="code-container">
                     <input type="text" name="code1" maxlength="1" class="code-input" required>
@@ -25,26 +34,123 @@
                     <input type="text" name="code5" maxlength="1" class="code-input" required>
                     <input type="text" name="code6" maxlength="1" class="code-input" required>
                 </div>
-                <button type="submit">Continue</button>
+                <div id="codeError" class="error-message-email" style="text-align: center; margin: 10px 0;"></div>
+                <button type="submit" id="continueButton">Continue</button>
             </form>
-            <div style="text-align: right;" class="center">
+            <div style="text-align: center;" class="center">
+                <p id="resendTimer">Resend code in: <span id="timer">0:30</span></p>
+                <button id="resendButton" style="display: none;">Resend Code</button>
             </div>
-            <p>Resend code in : 0:11</p>
         </div>
     </div>
     <script>
-        document.querySelectorAll(".code-input").forEach((input) => {
+        // Auto-focus next input field when entering a digit
+        document.querySelectorAll(".code-input").forEach((input, index) => {
             input.addEventListener("input", () => {
-                CheckDigit(input);
+                const digit = input.value.replace(/[^0-9]/g, "").slice(0, 1);
+                input.value = digit;
+                
+                // If digit entered and not the last input, focus next input
+                if (digit && index < document.querySelectorAll(".code-input").length - 1) {
+                    document.querySelectorAll(".code-input")[index + 1].focus();
+                }
+            });
+            
+            // Handle backspace to go to previous input
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace" && !input.value && index > 0) {
+                    document.querySelectorAll(".code-input")[index - 1].focus();
+                }
             });
         });
-
-        function CheckDigit(input) {
-            let digit = input.value;
-            // Keep only the first digit
-            digit = digit.replace(/[^0-9]/g, "").slice(0, 1);
-            input.value = digit;
+        
+        // Timer for resend code
+        let timeLeft = 30;
+        const timerElement = document.getElementById("timer");
+        const resendButton = document.getElementById("resendButton");
+        const resendTimer = document.getElementById("resendTimer");
+        
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                resendTimer.style.display = "none";
+                resendButton.style.display = "block";
+            } else {
+                timeLeft--;
+            }
         }
+        
+        const timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+        
+        // Resend button click handler
+        document.getElementById("resendButton").addEventListener("click", () => {
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            // Make an AJAX request to resend the code
+            fetch('{% url "resend_code" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken
+                },
+                body: ''
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reset timer and hide resend button
+                    timeLeft = 30;
+                    resendTimer.style.display = "block";
+                    resendButton.style.display = "none";
+                    
+                    // Restart timer
+                    clearInterval(timerInterval);
+                    const newTimerInterval = setInterval(updateTimer, 1000);
+                    updateTimer();
+                    
+                    alert("New verification code sent to your email!");
+                } else {
+                    alert("Failed to send new code. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred. Please try again later.");
+            });
+        });
+        
+        // Form submission validation
+        document.getElementById("verificationForm").addEventListener("submit", (e) => {
+            const inputs = document.querySelectorAll(".code-input");
+            const errorElement = document.getElementById("codeError");
+            
+            // Check if all inputs have values
+            let isComplete = true;
+            let code = "";
+            
+            inputs.forEach(input => {
+                if (!input.value) {
+                    isComplete = false;
+                }
+                code += input.value;
+            });
+            
+            if (!isComplete) {
+                e.preventDefault();
+                errorElement.textContent = "Please enter the complete 6-digit code";
+                errorElement.style.display = "block";
+                return;
+            }
+            
+            // Here you would typically validate the code against the backend
+            errorElement.style.display = "none";
+        });
     </script>
 </body>
 </html>

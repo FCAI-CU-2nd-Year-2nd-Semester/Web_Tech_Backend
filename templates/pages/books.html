@@ -5,15 +5,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Books</title>
     <!-- FavIcon -->
     <link rel="shortcut icon" href="{% static 'image/favicon.png' %}" type="image/x-icon">
-    <!-- REMIXIONS -->
+    <!-- REMIX ICONS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.1">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <!-- Dark mode CSS -->
     <link rel="stylesheet" href="{% static 'css/dark-mode.css' %}?v=1.0">
-    <!-- swiper css -->
+    <!-- Swiper CSS -->
     <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}" />
     <style>
         .cart-count, .favorite-count {
@@ -54,8 +55,14 @@
             gap: 0.5rem;
         }
         
-        /* Book card styles from books.html */
-        .featured__card {
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+        
+        .book-card {
             background-color: var(--container-color);
             border-radius: 1.25rem;
             padding: 1.5rem 1rem;
@@ -68,22 +75,28 @@
             text-align: center;
         }
         
-        .featured__card:hover {
+        .book-card:hover {
             transform: translateY(-0.5rem);
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
         }
         
-        .featured__img {
+        .book-card__img {
             max-width: 100%;
-            width: 85%;
             height: 280px;
-            object-fit: contain;
+            object-fit: cover;
             border-radius: 0.5rem;
             margin-bottom: 1rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
-        .featured__title {
+        .book-card__data {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .book-card__title {
             font-size: var(--h3-font-size);
             font-weight: var(--font-semi-bold);
             color: var(--title-color);
@@ -91,7 +104,13 @@
             font-family: var(--second-font);
         }
         
-        .featured__prices {
+        .book-card__author {
+            font-size: var(--small-font-size);
+            color: var(--text-color-light);
+            margin-bottom: 0.75rem;
+        }
+        
+        .book-card__prices {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -99,19 +118,19 @@
             margin: 0.5rem 0 1.5rem;
         }
         
-        .featured__price {
+        .book-card__price {
             color: var(--first-color);
             font-size: var(--h2-font-size);
             font-weight: var(--font-semi-bold);
         }
         
-        .featured__discount {
+        .book-card__discount {
             color: var(--text-color);
             text-decoration: line-through;
             font-weight: var(--font-medium);
         }
         
-        .featured__actions {
+        .book-card__actions {
             position: absolute;
             right: 1rem;
             top: 2rem;
@@ -123,12 +142,12 @@
             transition: all 0.3s ease;
         }
 
-        .featured__card:hover .featured__actions {
+        .book-card:hover .book-card__actions {
             opacity: 1;
             transform: translateX(0);
         }
         
-        .featured__actions button {
+        .book-card__actions .button {
             background: white;
             border: none;
             color: var(--title-color);
@@ -145,22 +164,22 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
         
-        .featured__actions button:hover {
+        .book-card__actions .button:hover {
             background-color: var(--first-color);
             color: white;
             transform: scale(1.1);
         }
         
-        .featured__actions .favorite-button.active {
+        .book-card__actions .favorite-button.active {
             color: var(--first-color);
         }
         
-        .featured__actions .favorite-button.active:hover {
+        .book-card__actions .favorite-button.active:hover {
             background-color: var(--first-color);
             color: white;
         }
         
-        .featured__card .button {
+        .book-card .add-cart-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--first-color), hsl(230, 62%, 66%));
             border: none;
@@ -175,25 +194,15 @@
             box-shadow: 0 4px 12px rgba(77, 108, 225, 0.25);
         }
         
-        .featured__card .button:hover {
+        .book-card .add-cart-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(77, 108, 225, 0.35);
         }
         
-        .featured__card .button:active {
+        .book-card .add-cart-btn:active {
             transform: translateY(0);
         }
-        
-        /* Disable any older styles that might conflict */
-        .featured__img-bar-wrapper,
-        .featured__action-bar,
-        .featured__add-cart,
-        .featured__favorite,
-        .featured__view {
-            display: none;
-        }
     </style>
-    <title>Library Home</title>
 </head>
 
 <body>
@@ -308,133 +317,44 @@
             {% endfor %}
         </div>
     </div>
-    <!--======================= MAIN =================-->
+    <!-- Main Content -->
     <main class="main">
-        <!--============================= Home ======================-->
-        <section class="home section" id="home">
-            <div class="home__container container grid">
-                <div class="home__data">
-                    <h1 class="home__title">
-                        Welcome to Our Library <br> E-Books
-                    </h1>
-                    <p class="home__description">
-                        Discover a world of knowledge and adventure with our extensive collection of e-books. From
-                        bestsellers to hidden gems, we have something for every reader. Start your reading journey
-                        today!
-                    </p>
-                    <a href="{% url 'newbooks' %}" class="button">Explore Now</a>
-                </div>
-                <!-- <div class="background">
-                        <img src="assets/img/Background.png" alt="background" class="home__background">
-                    </div> -->
-                <div class="home__images">
-                    <div class="home__swiper swiper">
-                        <div class="swiper-wrapper">
-                            <article class="home__article swiper-slide">
-                                <img src="{% static 'image/home-book-1.png' %}" alt="image" class="home__img">
-                            </article>
-                            <article class="home__article swiper-slide">
-                                <img src="{% static 'image/home-book-2.png' %}" alt="image" class="home__img">
-                            </article>
-                            <article class="home__article swiper-slide">
-                                <img src="{% static 'image/home-book-3.png' %}" alt="image" class="home__img">
-                            </article>
-                            <article class="home__article swiper-slide">
-                                <img src="{% static 'image/home-book-4.png' %}" alt="image" class="home__img">
-                            </article>
+        <section class="books section">
+            <h2 class="section__title">All Books</h2>
+            <div class="books-grid container">
+                {% for book in books %}
+                <article class="book-card">
+                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="book-card__img">
+                    <div class="book-card__data">
+                        <h2 class="book-card__title">{{ book.title }}</h2>
+                        <p class="book-card__author">by {{ book.author }}</p>
+                        <div class="book-card__prices">
+                            {% if book.discount_price %}
+                            <span class="book-card__discount">${{ book.price }}</span>
+                            <span class="book-card__price">${{ book.discount_price }}</span>
+                            {% else %}
+                            <span class="book-card__price">${{ book.price }}</span>
+                            {% endif %}
                         </div>
+                        <button class="add-cart-btn" onclick="addToCart({{ book.id }}, event)">ADD TO CART</button>
                     </div>
-                </div>
-            </div>
-        </section>
-        <!--===================== Services =================================-->
-        <section class="services section">
-            <div class="services__container container grid">
-                <article class="services__card">
-                    <i class="ri-truck-line"></i>
-                    <h3 class="services__title">Free Shipping</h3>
-                    <p class="services__description">Order More than $100</p>
+                    <div class="book-card__actions">
+                        <button class="button"><i class="ri-search-2-line"></i></button>
+                        <button class="button favorite-button {% if book in request.user.favorites.all %}active{% endif %}" 
+                                onclick="toggleFavorite({{ book.id }}, this)">
+                            <i class="ri-heart-{% if book in request.user.favorites.all %}fill{% else %}line{% endif %} favorite-icon"></i>
+                        </button>
+                        <a href="{% url 'book_details' book.id %}" class="button">
+                            <i class="ri-eye-line"></i>
+                        </a>
+                    </div>
                 </article>
-
-                <article class="services__card">
-                    <i class="ri-lock-line"></i>
-                    <h3 class="services__title">Secure payment</h3>
-                    <p class="services__description">100% Secure Payment</p>
-                </article>
-
-                <article class="services__card">
-                    <i class="ri-customer-service-2-line"></i>
-                    <h3 class="services__title">24/7 Support</h3>
-                    <p class="services__description">Call us anytime</p>
-                </article>
+                {% endfor %}
             </div>
         </section>
-
-        <!--======================= Featured =================-->
-        <section class="featured section" id="featured">
-            <h2 class="section__title">
-                Featured Books
-            </h2>
-            <div class="featured__container container">
-                <div class="featured__swiper swiper">
-                    <div class="swiper-wrapper">
-                        {% for book in books|slice:':5' %}
-                        <article class="featured__card swiper-slide">
-                            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="featured__img">
-                            <h2 class="featured__title">{{ book.title }}</h2>
-                            <div class="featured__prices">
-                                {% if book.discount_price %}
-                                <span class="featured__discount">${{ book.price }}</span>
-                                <span class="featured__price">${{ book.discount_price }}</span>
-                                {% else %}
-                                <span class="featured__price">${{ book.price }}</span>
-                                {% endif %}
-                            </div>
-                            <button type="button" class="button" onclick="addToCart({{ book.id }}, event)">ADD TO CART</button>
-                            <div class="featured__actions">
-                                <button><i class="ri-search-2-line"></i></button>
-                                <button class="favorite-button {% if book in request.user.favorites.all %}active{% endif %}" onclick="toggleFavorite({{ book.id }}, this)">
-                                    <i class="ri-heart-{% if book in request.user.favorites.all %}fill{% else %}line{% endif %} favorite-icon"></i>
-                                </button>
-                                <button onclick="window.location.href='{% url 'book_details' book.id %}'">
-                                    <i class="ri-eye-line"></i>
-                                </button>
-                            </div>
-                        </article>
-                        {% endfor %}
-                    </div>
-                    <div class="swiper-button-prev">
-                        <i class="ri-arrow-left-s-line"></i>
-                    </div>
-                    <div class="swiper-button-next">
-                        <i class="ri-arrow-right-s-line"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!--======================= Discount =================-->
-        <section class="discount section" id="discount">
-            <div class="discount__container container grid">
-                <div class="discount__data">
-                    <h2 class="discount__title section__title">
-                        Up To 50% Off
-                    </h2>
-                    <p class="discount__description">
-                        Get ready for the biggest sale of the year! Enjoy up to 50% off on selected e-books. Don't miss
-                        out on this limited-time offer. Shop now and save big on your favorite titles!
-                    </p>
-                    <br><br>
-                    <a href="{% url 'newbooks' %}" class="button">Shop Now</a>
-                </div>
-                <div class="discount__images">
-                    <img src="{% static 'image/discount-book-1.png' %}" alt="image" class="discount__img-1">
-                    <img src="{% static 'image/discount-book-2.png' %}" alt="image" class="discount__img-2">
-                </div>
-            </div>
-        </section>
-
     </main>
-    <!--======================= FOOTER =================-->
+
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer__container container grid">
             <div>
@@ -443,7 +363,7 @@
                 </a>
                 <p class="footer__description">The best place to find your next read.</p>
             </div>
-
+    
             <div>
                 <h3 class="footer__title">About Us</h3>
                 <ul class="footer__links">
@@ -453,7 +373,7 @@
                     <li><a href="#" class="footer__link">Terms of Service</a></li>
                 </ul>
             </div>
-
+    
             <div>
                 <h3 class="footer__title">Library</h3>
                 <ul class="footer__links">
@@ -463,7 +383,7 @@
                     <li><a href="#" class="footer__link">Help Center</a></li>
                 </ul>
             </div>
-
+    
             <div>
                 <h3 class="footer__title">Contact</h3>
                 <ul class="footer__links">
@@ -482,7 +402,7 @@
                     </li>
                 </ul>
             </div>
-
+    
             <div>
                 <h3 class="footer__title">Social</h3>
                 <div class="footer__social">
@@ -498,31 +418,25 @@
                 </div>
             </div>
         </div>
-
+    
         <span class="footer__copy">
             All rights reserved &copy; 2023 <a href="{% url 'index' %}" class="footer__link">E-Book</a>.
         </span>
     </footer>
-    <!--======================= SCROLL UP =================-->
+
     <!-- ScrollReveal-->
     <script src="{% static 'js/scrollreveal.min.js' %}"></script>
 
     <!-- Swiper JS -->
     <script src="{% static 'js/swiper-bundle.min.js' %}"></script>
+    
     <!-- Main JS -->
     <script src="{% static 'js/main.js' %}"></script>
+    
     <!-- Search JS -->
     <script src="{% static 'js/search.js' %}"></script>
-    <script>
-        // Remove any existing event listeners from Add to Cart buttons
-        document.addEventListener('DOMContentLoaded', () => {
-            const buttons = document.querySelectorAll('.button');
-            buttons.forEach(button => {
-                const newButton = button.cloneNode(true);
-                button.parentNode.replaceChild(newButton, button);
-            });
-        });
 
+    <script>
         function addToCart(bookId, event) {
             // Prevent any default behavior
             if (event) {
@@ -531,11 +445,11 @@
             }
             
             // Find the button that was clicked
-            const button = event ? event.target : document.querySelector(`[onclick*="addToCart(${bookId})"]`);
-            const originalText = button.textContent;
+            const button = event ? event.target.closest('button') : document.querySelector(`[onclick*="addToCart(${bookId})"]`);
+            const originalText = button.innerHTML;
             button.disabled = true;
             button.classList.add('button--loading');
-            button.textContent = 'Adding to Cart...';
+            button.textContent = 'Adding...';
             
             fetch('{% url "add_to_cart" %}', {
                 method: 'POST',
@@ -556,7 +470,7 @@
                     // Show success message with animation
                     button.classList.remove('button--loading');
                     button.classList.add('button--success');
-                    button.textContent = 'Added to Cart ✓';
+                    button.innerHTML = '<i class="ri-check-line"></i> Added';
                     
                     // Update cart count with animation
                     const cartCount = document.querySelector('.cart-count');
@@ -569,17 +483,17 @@
                     // Reset button after delay
                     setTimeout(() => {
                         button.classList.remove('button--success');
-                        button.textContent = originalText;
+                        button.innerHTML = originalText;
                         button.disabled = false;
                     }, 2000);
                 } else {
                     // Show error state
                     button.classList.remove('button--loading');
                     button.classList.add('button--error');
-                    button.textContent = data.message || 'Failed to add to cart';
+                    button.textContent = 'Failed';
                     setTimeout(() => {
                         button.classList.remove('button--error');
-                        button.textContent = originalText;
+                        button.innerHTML = originalText;
                         button.disabled = false;
                     }, 2000);
                 }
@@ -588,30 +502,15 @@
                 console.error('Error:', error);
                 button.classList.remove('button--loading');
                 button.classList.add('button--error');
-                button.textContent = 'Error occurred';
+                button.textContent = 'Error';
                 setTimeout(() => {
                     button.classList.remove('button--error');
-                    button.textContent = originalText;
+                    button.innerHTML = originalText;
                     button.disabled = false;
                 }, 2000);
             });
             
             return false;
-        }
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
         }
 
         function toggleFavorite(bookId, button) {
@@ -660,6 +559,21 @@
             .finally(() => {
                 button.disabled = false;
             });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
     </script>
 </body>

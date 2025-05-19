@@ -1,4 +1,3 @@
-
 document.querySelector(".input-status-update").addEventListener("input", () => {
     checkInput();
     updateStatusBar();
@@ -11,8 +10,8 @@ function checkInput() {
     const bartext = document.querySelector(".status-text");
     input.value = input.value.replace(/\s/g, "");
     if (input.value.trim() !== "") {
-        statusbar.style.display = "block";
-        bartext.style.display = "block";       
+        statusbar.style.display = "flex";
+        bartext.style.display = "block";
     } else {
         statusbar.style.display = "none";
         bartext.style.display = "none";
@@ -36,9 +35,9 @@ function calculatePasswordStrength(password) {
     if (hasSymbol) strength += 15;
 
     // Length score
-    if (length < 8 ) strength += ( 1.25 * length )
-        else strength += 40;
-     
+    if (length < 8) strength += (1.25 * length)
+    else strength += 40;
+
     // Cap at 100
     return Math.min(strength, 100);
 }
@@ -52,27 +51,27 @@ function updateStatusBar() {
     const statusBar = document.querySelector(".status-bar");
     statusBar.style.width = strength + "%";
 
-    // Optional: change color based on strength
+    // Make text more concise
     if (strength < 40) {
         statusBar.style.backgroundColor = "red";
-        bartext.innerHTML = "Weak Password";
+        bartext.innerHTML = "Weak";
         bartext.style.color = "red";
     } else if (strength < 80) {
         statusBar.style.backgroundColor = "orange";
-        bartext.innerHTML = "Moderate Password";
+        bartext.innerHTML = "Moderate";
         bartext.style.color = "orange";
     } else {
         statusBar.style.backgroundColor = "green";
-        bartext.innerHTML = "Strong Password";
+        bartext.innerHTML = "Strong";
         bartext.style.color = "green";
         return true;
     }
 }
 
 function passwordVerify() {
-    const input = document.querySelector(".input-status-update")
-    const confirmInput = document.querySelector(".input-status-confirm")
-    
+    const input = document.querySelector(".input-status-update");
+    const confirmInput = document.querySelector(".input-status-confirm");
+
     if (updateStatusBar() && input.value.trim() == confirmInput.value.trim()) {
         // Make the Change password or the regester bottom active
         return true;
@@ -81,3 +80,19 @@ function passwordVerify() {
         return false;
     }
 }
+
+function showIcon() {
+    // This function can be used to show/hide password visibility icons
+    // For now it's just a placeholder since the actual implementation may depend on
+    // whether there are password visibility toggle icons in the design
+}
+
+// Add event listener for password confirmation field
+document.addEventListener('DOMContentLoaded', function () {
+    const confirmPassword = document.querySelector('.input-status-confirm');
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', function () {
+            passwordVerify();
+        });
+    }
+});

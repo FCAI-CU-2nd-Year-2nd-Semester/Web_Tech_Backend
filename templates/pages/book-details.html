@@ -23,6 +23,11 @@
             </a>
             <div class="nav__menu">
                 <button id="back-button" class="button" onclick="history.back()"><i class="ri-arrow-left-line"></i> Back</button>
+                {% if request.user.is_superuser %}
+                <a href="/admin/" class="button admin-button" style="margin-left: 15px;">
+                    <i class="ri-dashboard-line"></i> Admin Dashboard
+                </a>
+                {% endif %}
             </div>
         </nav>
     </header>

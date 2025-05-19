@@ -39,23 +39,25 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 20px 0;
     background-color: #f9f9f9;
+    overflow-x: hidden;
 }
 
 #container {
     display: flex;
     width: 70%;
-    /* height: 600px;  <-- remove this */
     max-width: 900px;
+    max-height: 90vh;
     background: white;
     border-radius: 2rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 10px;
     position: relative;
     margin: 20px auto;
-    /* Center horizontally, if needed */
+    overflow: hidden;
 }
 
 #imageContainer {
@@ -65,9 +67,8 @@ body {
     justify-content: center;
     background-color: #f1f5f9;
     /* Softer, modern gray-blue background */
-        border-radius: 2rem;
+    border-radius: 2rem;
     padding: 20px;
-    
 }
 
 
@@ -80,52 +81,66 @@ body {
 
 #formContainer {
     flex: 1;
-    padding: 40px;
+    padding: 25px;
     text-align: center;
     background: white;
     border-radius: 2rem;
+    overflow-y: auto;
+    max-height: 70vh;
 }
 
 #imageTopCenter {
     flex: 1;
     display: flex;
-    width: 50%;          /* Let it scale naturally */
-    height: 50%;         /* Maintain aspect ratio */
-    margin: 0 auto 10px;       /* Center horizontally */
+    width: 50%;
+    /* Let it scale naturally */
+    height: 50%;
+    /* Maintain aspect ratio */
+    margin: 0 auto 10px;
+    /* Center horizontally */
     background-color: #dbe1ff;
-    object-fit: contain;  /* Prevent distortion */
-    position: relative;   /* Helps with positioning */
-    top: 0;               /* Stick to the top */
+    object-fit: contain;
+    /* Prevent distortion */
+    position: relative;
+    /* Helps with positioning */
+    top: 0;
+    /* Stick to the top */
 }
 
 input {
     width: 90%;
     padding: 12px 16px;
     margin: 10px 0;
-    border: 1px solid #cbd5e1; /* Softer gray-blue border */
+    border: 1px solid #cbd5e1;
+    /* Softer gray-blue border */
     border-radius: 2rem;
-    background-color: #f8fafc; /* Soft white-blue background */
+    background-color: #f8fafc;
+    /* Soft white-blue background */
     font-size: 15px;
     transition: all 0.3s ease-in-out;
 }
 
 input:hover {
-    border-color: #2563eb; /* Tailwind blue-600 */
-    background-color: #eef4ff; /* Very light bluish hover */
+    border-color: #2563eb;
+    /* Tailwind blue-600 */
+    background-color: #eef4ff;
+    /* Very light bluish hover */
 }
 
 input:focus {
     background-color: #ffffff;
     border-color: #2563eb;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); /* Subtle focus ring */
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    /* Subtle focus ring */
 }
 
 button {
     width: 100%;
     margin: 10px 0;
-    background: linear-gradient(135deg, var(--first-color), hsl(230, 62%, 66%));/* Add a gradient background */
-    color: var(--white-color);  
+    background: linear-gradient(135deg, var(--first-color), hsl(230, 62%, 66%));
+    /* Add a gradient background */
+    color: var(--white-color);
     padding: 1rem 2rem;
     border-radius: 2rem;
     border-color: var(--border-color);
@@ -136,26 +151,31 @@ button {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0px 4px 12px rgba(30, 64, 175, 0.3); /* Subtle blue shadow */
+    box-shadow: 0px 4px 12px rgba(30, 64, 175, 0.3);
+    /* Subtle blue shadow */
     transition: all 0.3s ease-in-out;
 }
 
 button:hover {
     background: white;
-    color: #1e3a8a; /* Match gradient color on hover */
+    color: #1e3a8a;
+    /* Match gradient color on hover */
     border: 2px solid #1e3a8a;
     box-shadow: 0px 6px 16px rgba(30, 64, 175, 0.5);
-    transform: translateY(-2px); /* Slight lift */
+    transform: translateY(-2px);
+    /* Slight lift */
 }
 
 button img {
     width: 20px;
     height: 20px;
-    filter: brightness(0) invert(1); /* Makes logos white */
+    filter: brightness(0) invert(1);
+    /* Makes logos white */
 }
 
 button:hover img {
-    filter: none; /* Show original dark icon */
+    filter: none;
+    /* Show original dark icon */
 }
 
 
@@ -200,7 +220,7 @@ button:hover img {
 }
 
 .code-container {
-    
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -224,32 +244,44 @@ button:hover img {
     align-items: center;
     border-radius: 2rem;
     border: 1px solid #727b9b;
-    background-color: #f4f4f9; /* Light background color */
-    padding: 4px; /* Padding for spacing */
+    background-color: #f4f4f9;
+    /* Light background color */
+    padding: 4px;
+    /* Padding for spacing */
     margin: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    transition: all 0.3s ease; /* Smooth transition when showing/hiding */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+    transition: all 0.3s ease;
+    /* Smooth transition when showing/hiding */
 }
 
 /* Status Bar Styling */
 .status-bar {
-    width: 2%; /* Increase width for better visibility */
-    height: 8px; /* Slightly taller for better prominence */
-    background-color: #ff0000; /* Red color for 'Offline' */
+    width: 2%;
+    /* Increase width for better visibility */
+    height: 8px;
+    /* Slightly taller for better prominence */
+    background-color: #ff0000;
+    /* Red color for 'Offline' */
     border-radius: 2rem;
-    transition: width 0.5s ease-in-out; /* Smooth transition for width change */
+    transition: width 0.5s ease-in-out;
+    /* Smooth transition for width change */
 }
 
 .status-text {
-    display: none; /* Initially hidden */
-    font-size: 14px; /* Font size for the status text */
+    display: none;
+    /* Initially hidden */
+    font-size: 14px;
+    /* Font size for the status text */
     font-family: 'Roboto', sans-serif;
-    color: #333; /* Darker text color for contrast */
-    margin: 10px 0px 20px 0px; /* Space between the bar and text */
+    color: #333;
+    /* Darker text color for contrast */
+    margin: 10px 0px 20px 0px;
+    /* Space between the bar and text */
 }
 
-.error-message-email{
-    color : red;
+.error-message-email {
+    color: red;
     display: none;
 }
 
@@ -258,20 +290,57 @@ button:hover img {
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        padding: 20px;
+        padding: 10px;
+        height: auto;
+        overflow-y: auto;
     }
+
     #container {
         flex-direction: column;
         height: auto;
+        max-height: none;
+        width: 90%;
+        margin: 10px auto;
+        overflow: visible;
+    }
+
+    #formContainer {
+        flex: unset;
+        padding: 20px;
+        max-height: 60vh;
+        overflow-y: auto;
     }
 
     #imageContainer {
         flex: unset;
-        height: 100%;
+        height: auto;
+        max-height: 30vh;
     }
+
     #imageTopCenter {
         flex: unset;
-        width: 100%;          /* Let it scale naturally */
-        height: 100%;            /* Stick to the top */
+        width: 100%;
+        height: 100%;
     }
+}
+
+.form-field {
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    text-align: left;
+    padding-left: 5%;
+}
+
+.form-field ul.errorlist {
+    color: #e74c3c;
+    list-style-type: none;
+    padding: 0;
+    margin: 5px 0;
+    font-size: 14px;
+    text-align: left;
 }

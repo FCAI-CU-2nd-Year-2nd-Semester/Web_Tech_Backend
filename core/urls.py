@@ -8,6 +8,7 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('forgot-password/', views.forgot_password_view, name='forgot_password'),
     path('send-code/', views.send_code_view, name='send_code'),
+    path('resend-code/', views.resend_code_view, name='resend_code'),
     path('change-password/', views.change_password_view, name='change_password'),
     path('my-cart/', views.my_cart_view, name='my_cart'),
     path('favourites/', views.favourites_view, name='favourites'),
@@ -17,4 +18,5 @@ urlpatterns = [
     path('newbooks.html', views.newbooks_view, name='newbooks'),
     path('add-favorite/', views.add_favorite, name='add_favorite'),
     path('remove-favorite/', views.remove_favorite, name='remove_favorite'),
+    path('books/', views.books_view, name='books'),
 ]

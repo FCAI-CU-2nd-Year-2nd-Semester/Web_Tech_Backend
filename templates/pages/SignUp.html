@@ -26,7 +26,26 @@
             {% endif %}
             <form method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
+                <div class="form-field">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username.errors }}
+                    {{ form.username }}
+                </div>
+                <div class="form-field">
+                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1.errors }}
+                    <input type="password" name="password1" class="input-status-update" required id="{{ form.password1.id_for_label }}">
+                    <div class="status-bar-container">
+                        <div class="status-bar"></div>
+                    </div>
+                    <div class="status-text"></div>
+                </div>
+                <div class="form-field">
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                    {{ form.password2.errors }}
+                    <input type="password" name="password2" class="input-status-confirm" required id="{{ form.password2.id_for_label }}">
+                </div>
+                {% for field in form.hidden_fields %}{{ field }}{% endfor %}
                 <button type="submit" id="registerButton">Register</button>
             </form>
             <div class="or-divider">OR</div>
